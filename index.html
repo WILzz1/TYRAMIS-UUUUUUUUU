@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hey, Jangan Sedih Lagi Ya! ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: url('background.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 240, 245, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            border: 2px solid rgba(255, 182, 193, 0.5);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Styling Pemilih Bahasa */
+        .lang-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        select {
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: 1px solid #ffb6c1;
+            background: rgba(255, 255, 255, 0.9);
+            color: #d147a3;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: #d147a3;
+            font-size: 1.8rem;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        p.sub {
+            color: #555;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .joke-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 110px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border-left: 5px solid #ffb6c1;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            white-space: pre-line;
+            transition: opacity 0.3s ease;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ffb6c1, #d147a3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(209, 71, 163, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(209, 71, 163, 0.5);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .music-player {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #ffb6c1;
+        }
+
+        .music-player p {
+            font-size: 0.8rem;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        audio {
+            width: 100%;
+            height: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="lang-selector">
+            <select id="language" onchange="changeLanguage()">
+                <option value="id">🇮🇩 Indonesia</option>
+                <option value="su">🌿 Sunda</option>
+                <option value="md">🧂 Madura</option>
+                <option value="ko">🇰🇷 Korea</option>
+            </select>
+        </div>
+
+        <h1 id="title">Hey, Jangan Sedih Lagi Ya! 💕</h1>
+        <p class="sub" id="subtitle">Aku nggak suka liat kamu sedih. Aku punya sesuatu yang (semoga) bisa bikin kamu senyum lagi. Klik tombol di bawah ya!</p>
+        
+        <div class="joke-box" id="jokeDisplay">
+            Klik tombol di bawah buat liat jokes-nya ya! 😉
+        </div>
+
+        <button id="jokeBtn" onclick="getJoke()">Tebak-tebakan Lucu ✨</button>
+
+        <div class="music-player">
+            <p id="musicText">🎵 Now Playing: Untuk Perempuan Yang Sedang Di Pelukan</p>
+            <audio controls autoplay loop>
+                <source src="Untuk Perempuan Yang Sedang Di Pelukan.mp3" type="audio/mpeg">
+                Browser kamu tidak mendukung pemutar musik.
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        // Database Bahasa & Jokes
+        const langData = {
+            id: {
+                title: "Hey, Jangan Sedih Lagi Ya! 💕",
+                subtitle: "Aku nggak suka liat kamu sedih. Aku punya sesuatu yang (semoga) bisa bikin kamu senyum lagi. Klik tombol di bawah ya!",
+                initJoke: "Klik tombol di bawah buat liat jokes-nya ya! 😉",
+                btn: "Tebak-tebakan Lucu ✨",
+                music: "🎵 Now Playing: Justin Bieber - Favorite Girl",
+                jokes: [
+                    "Kuping, kuping apa yang paling manis? \n\n...Kupingin kamu selalu bahagia. 🥰",
+                    "Minyak apa yang bikin mabuk? \n\n...Minyaksikan senyumanmu setiap hari. 🤭",
+                    "Kipas apa yang paling ditunggu-tunggu? \n\n...Kipastian dari kamu. Nyaaww~ ✌️",
+                    "Susu apa yang paling indah? \n\n...Susungguhnya aku gak mau liat kamu sedih lagi. 🥺"
+                ]
+            },
+            su: {
+                title: "Hey, Tong Sedih Deui Nya! 💕",
+                subtitle: "Akang teu resep ningali geulis sedih. Akang boga hal anu (mugi-mugi) tiasa ngadamel anjeun imut deui. Pencét tombol di handap nya!",
+                initJoke: "Pencét tombol di handap kanggo ningali banyolanna nya! 😉",
+                btn: "Banyolan Pikaseurieun ✨",
+                music: "🎵 Keur Diputer: Justin Bieber - Favorite Girl",
+                jokes: [
+                    "Minyak, minyak naon anu matak mabok? \n\n...Minyaksikan anjeun imut unggal dinten. 🤭",
+                    "Kipas naon anu paling didagoan ku akang? \n\n...Kipastian ti salira. Nyaaww~ ✌️",
+                    "Susu naon anu pangéndahna? \n\n...Susungguhna akang embung ningali geulis sedih deui. 🥺",
+                    "Aya naon atuh neng mani baeud wae? \n\n...Cing atuh seuri sakedik, da manisna ngéléhkeun gula kawung. 🥰"
+                ]
+            },
+            md: {
+                title: "Héy, Jâ' Seddhih Polé Yâ! 💕",
+                subtitle: "Sèngko' ta' lèbur ngabâs bâ'na seddhih. Sèngko' andhi' ghughuân sè bisa magumbirâ bâ'na polé. Kèk-pèkkèk tombol è bâbâ arèya!",
+                initJoke: "Kèk-pèkkèk tombol è bâbâ kaangguy ngabâs lèlèburannâ yâ! 😉",
+                btn: "Tebbegghân Lèbur ✨",
+                music: "🎵 Samangkèn Main: Justin Bieber - Favorite Girl",
+                jokes: [
+                    "Mènya', mènya' apa sè abâdhi mabuk? \n\n...Mènyaksikan bâ'na asènyum sabbhân arè. 🤭",
+                    "Kèpas apa sè palèng ètèngghu? \n\n...Kèpastian ḍâri bâ'na. Nyaaww~ ✌️",
+                    "Soso apa sè palèng raddin? \n\n...Sosongghuna sèngko' ta' terro ngabâs bâ'na seddhih polé. 🥺",
+                    "Kopèng, kopèng apa sè palèng manès? \n\n...Kopèngin bâ'na saterrossâ gumbirâ. 🥰"
+                ]
+            },
+            ko: {
+                title: "헤이, 더 이상 슬퍼하지 마! 💕",
+                subtitle: "네가 슬퍼하는 걸 보기 싫어. 널 다시 웃게 할 아재개그를 준비했어. 아래 버튼을 눌러봐!",
+                initJoke: "농담을 보려면 아래 버튼을 클릭해! 😉",
+                btn: "재미있는 아재개그 ✨",
+                music: "🎵 재생 중: Justin Bieber - Favorite Girl",
+                jokes: [
+                    "세상에서 가장 뜨거운 바다는 뭘까? \n\n...사랑해 (바다 해). 내 사랑을 받아줘~ 🤭",
+                    "딸기가 도망가면 뭔지 알아? \n\n...딸기쨈 (딸기 째앰~). 너도 내 맘속으로 도망쳐! ✌️",
+                    "세상에서 가장 예쁜 꽃은? \n\n...바로 너야. 이제 그만 슬퍼해! 🥺",
+                    "우유가 넘어지면 뭔지 알아? \n\n...아야! (우유를 옆으로 눕혀봐). 내 마음도 아야 해~ 🍼"
+                ]
+            }
+        };
+
+        // Fungsi untuk mengganti bahasa
+        function changeLanguage() {
+            const lang = document.getElementById("language").value;
+            const data = langData[lang];
+
+            document.getElementById("title").innerText = data.title;
+            document.getElementById("subtitle").innerText = data.subtitle;
+            document.getElementById("jokeBtn").innerText = data.btn;
+            document.getElementById("musicText").innerText = data.music;
+            
+            // Reset kotak jokes saat bahasa diganti
+            const jokeDisplay = document.getElementById('jokeDisplay');
+            jokeDisplay.style.opacity = 0;
+            setTimeout(() => {
+                jokeDisplay.innerText = data.initJoke;
+                jokeDisplay.style.opacity = 1;
+            }, 300);
+        }
+
+        // Fungsi memunculkan jokes sesuai bahasa yang aktif
+        function getJoke() {
+            const lang = document.getElementById("language").value;
+            const currentJokes = langData[lang].jokes;
+            const jokeDisplay = document.getElementById('jokeDisplay');
+            
+            const randomIndex = Math.floor(Math.random() * currentJokes.length);
+            
+            jokeDisplay.style.opacity = 0;
+            setTimeout(() => {
+                jokeDisplay.innerText = currentJokes[randomIndex];
+                jokeDisplay.style.opacity = 1;
+            }, 300);
+        }
+    </script>
+</body>
+</html>
